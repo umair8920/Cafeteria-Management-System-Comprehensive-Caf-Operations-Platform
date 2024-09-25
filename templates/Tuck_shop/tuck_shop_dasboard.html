@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tuck Shop Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Tuck Shop Dashboard</h1>
+    </header>
+    
+    <main>
+        <section>
+            <h2>Manage Your Tuck Shop Items</h2>
+            <p>Use the Buttons below to manage your Tuck Shop inventory:</p>
+            <ul class="button-list">
+                <li><a href="{{ url_for('tuck_shop_items') }}" class="btn">View Tuck Shop Items</a></li>
+                <li><a href="{{ url_for('add_tuck_shop_items') }}" class="btn">Add New Tuck Shop Item</a></li>
+                <li><a href="{{ url_for('generate_tuck_Shop_bill') }}" class="btn">Generate bill</a></li>
+                <li><a href="{{ url_for('logout') }}" class="btn">Logout</a></li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Tuck Shop. All rights reserved.</p>
+    </footer>
+</body>
+</html>

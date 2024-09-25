@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Stock Item</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/update_item.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Update Stock Item</h1>
+        <a href="{{ url_for('show_stocks') }}" class="header-btn">Back to Stocks</a>
+    </header>
+    
+    <div class="container">
+        <form action="{{ url_for('update_stock', id=stock['id']) }}" method="POST">
+            <label for="section">Section:</label>
+            <select name="section" id="section" required>
+                <option value="coffee shop" {% if stock.section == 'coffee shop' %}selected{% endif %}>Coffee Shop</option>
+                <option value="fast food" {% if stock.section == 'fast food' %}selected{% endif %}>Fast Food</option>
+                <option value="desi food" {% if stock.section == 'desi food' %}selected{% endif %}>Desi Food</option>
+                <option value="tuck shop" {% if stock.section == 'tuck shop' %}selected{% endif %}>Tuck Shop</option>
+            </select>
+
+            <label for="item_name">Item Name:</label>
+            <input type="text" id="item_name" name="item_name" value="{{ stock['item_name'] }}" required>
+
+            <label for="person_delivering">Person Delivering:</label>
+            <input type="text" id="person_delivering" name="person_delivering" value="{{ stock['person_delivering'] }}" required>
+
+            <label for="person_receiving">Person Receiving:</label>
+            <input type="text" id="person_receiving" name="person_receiving" value="{{ stock['person_receiving'] }}" required>
+
+            <button type="submit">Update Item</button>
+        </form>
+    </div>
+
+    <footer1>
+        <p>&copy; 2024 Stock Management. All rights reserved.</p>
+    </footer1>
+</body>
+</html>

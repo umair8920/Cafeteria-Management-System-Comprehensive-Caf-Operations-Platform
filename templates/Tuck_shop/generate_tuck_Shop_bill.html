@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cafeteria Bill</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <header>
+        <h1>Cafeteria Bill</h1>
+        <nav>
+            <a href="{{ url_for('tuck_shop') }}" class="header-btn">Back to Home</a>
+            <button type="button" class="refresh-btn" onclick="refreshPage()">Refresh</button>
+        </nav>
+    </header>
+
+    <div class="container">
+        <!-- Error message container -->
+        <div id="error-message" class="error-message"></div>
+
+        <form id="bill-form" onsubmit="return validateForm()" action="{{ url_for('tuck_shop_bill') }}" method="POST">
+            <!-- Display Total Price -->
+            <div class="total-container">
+                <label for="total_price_display">Total Price:</label>
+                <input type="text" id="total_price_display" readonly>
+            </div>
+
+            <!-- Input for Cash Received -->
+            <div class="cash-container">
+                <label for="cash_received">Cash Received:</label>
+                <input type="number" step="0.01" id="cash_received" name="cash_received" oninput="calculateChange()">
+            </div>
+
+            <!-- Display Change -->
+            <div class="change-container">
+                <label for="change_due">Change Due:</label>
+                <input type="text" id="change_due" readonly>
+            </div>
+
+            <!-- Bill Type Selection -->
+            <div class="item-row">
+                <label for="bill_type">Bill Type:</label>
+                <select name="bill_type" id="bill_type">
+                    <option value="Student" selected>Student</option>
+                    <option value="Faculty">Faculty</option>
+                    <option value="Owner">Owner</option>
+                </select>
+            </div>
+
+            <!-- Button to add more items -->
+            <button type="button" class="add-item-btn" onclick="addItemRow()">Add Another Item</button>
+
+            <!-- Hidden field to send total price to backend -->
+            <input type="hidden" name="total_price" id="total_price_hidden">
+
+            <!-- Initial item row -->
+            <div class="item-row">
+                <label for="item">Select Item:</label>
+                <select name="items" class="item-select" onchange="updateTotal()">
+                    <option value=""></option>
+                    {% for item in tuck_shop_items %}
+                    <option value="tuck_shop|{{ item['id'] }}" data-price="{{ item['price'] }}">{{ item['name'] }} - {{ item['price'] }} ({{ item['category'] or 'N/A' }})</option>
+                    {% endfor %}
+                </select>
+                <input type="number" name="quantities" placeholder="Quantity" min="1" onchange="updateTotal()" disabled>
+            </div>
+
+            <!-- Submit Form -->
+            <button type="submit">Generate Bill</button>
+        </form>
+    </div>
+
+    <!-- Include jQuery (required for Select2) -->
+    <script src="static/js/jquery-3.6.0.min.js"></script>
+    <!-- Include Select2 JS -->
+    <script src="static/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Initialize Select2 on the item select input
+            $('.item-select').select2({
+                placeholder: "Type to search for an item",
+                allowClear: true // Allow clearing the selection
+            });
+        });
+
+        function addItemRow() {
+            const container = document.querySelector('.container form');
+            const itemRow = document.createElement('div');
+            itemRow.className = 'item-row';
+
+            itemRow.innerHTML = `
+                <label for="item">Select Item:</label>
+                <select name="items" class="item-select" onchange="updateTotal()">
+                    <option value=""></option>
+                    {% for item in tuck_shop_items %}
+                    <option value="tuck_shop|{{ item['id'] }}" data-price="{{ item['price'] }}">{{ item['name'] }} - {{ item['price'] }} ({{ item['category'] or 'N/A' }})</option>
+                    {% endfor %}
+                </select>
+                <input type="number" name="quantities" placeholder="Quantity" min="1" onchange="updateTotal()" disabled>
+            `;
+
+            container.insertBefore(itemRow, container.querySelector('button[type="submit"]'));
+
+            // Re-initialize Select2 for the new select element
+            $(itemRow).find('.item-select').select2({
+                placeholder: "Type to search for an item",
+                allowClear: true
+            });
+        }
+
+        function updateTotal() {
+            const items = document.querySelectorAll('select[name="items"]');
+            const quantities = document.querySelectorAll('input[name="quantities"]');
+            let total = 0;
+
+            items.forEach((item, index) => {
+                const price = parseFloat(item.options[item.selectedIndex].getAttribute('data-price'));
+                const quantityInput = quantities[index];
+                const selectedItem = item.value !== ""; // Check if an item is selected
+
+                // Enable or disable quantity input based on item selection
+                quantityInput.disabled = !selectedItem;
+
+                const quantity = parseInt(quantityInput.value);
+
+                if (!isNaN(price) && selectedItem && !isNaN(quantity)) {
+                    total += price * quantity;
+                }
+            });
+
+            document.getElementById('total_price_display').value = total.toFixed(2);
+            document.getElementById('total_price_hidden').value = total.toFixed(2);
+
+            calculateChange();
+        }
+
+        function calculateChange() {
+            const total = parseFloat(document.getElementById('total_price_hidden').value) || 0;
+            const cashReceived = parseFloat(document.getElementById('cash_received').value) || 0;
+            const change = cashReceived - total;
+
+            document.getElementById('change_due').value = change.toFixed(2);
+        }
+
+        function refreshPage() {
+            window.location.reload();
+        }
+
+        function validateForm() {
+            const items = document.querySelectorAll('select[name="items"]');
+            const quantities = document.querySelectorAll('input[name="quantities"]');
+            const cashReceived = parseFloat(document.getElementById('cash_received').value);
+            const totalPrice = parseFloat(document.getElementById('total_price_hidden').value);
+            let errorMessage = '';
+
+            // Check if cash received is enough
+            if (isNaN(cashReceived) || cashReceived < totalPrice) {
+                errorMessage += 'Insufficient cash received.<br>';
+            }
+
+            // Validate item and quantity selection
+            items.forEach((item, index) => {
+                const quantity = quantities[index].value;
+
+                if (item.value !== '' && (quantity === '' || parseInt(quantity) <= 0)) {
+                    errorMessage += 'Please provide a valid quantity for the selected item.<br>';
+                }
+            });
+
+            if (errorMessage) {
+                // Display error message
+                document.getElementById('error-message').innerHTML = errorMessage;
+                document.getElementById('error-message').style.display = 'block';
+                return false; // Prevent form submission
+            } else {
+                document.getElementById('error-message').style.display = 'none';
+                return true; // Allow form submission
+            }
+        }
+    </script>
+</body>
+
+</html>

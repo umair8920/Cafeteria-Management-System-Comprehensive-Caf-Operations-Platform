@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Items</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/menu_items.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Stock Items</h1>
+        <nav>
+            <a href="{{ url_for('add_new_stock') }}" class="header-btn">Add New Stock</a>
+            <a href="{{ url_for('admin_dashboard') }}" class="header-btn">Back to Home</a>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Section</th>
+                        <th>Item Name</th>
+                        <th>Person Delivering</th>
+                        <th>Person Receiving</th>
+                        <th>Delivery Date</th>
+                        <th>Delivery Time</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if items %}
+                        {% for item in items %}
+                        <tr>
+                            <td>{{ item['id'] }}</td>
+                            <td>{{ item['section'] }}</td>
+                            <td>{{ item['item_name'] }}</td>
+                            <td>{{ item['person_delivering'] }}</td>
+                            <td>{{ item['person_receiving'] }}</td>
+                            <td>{{ item['delivery_date'] }}</td>
+                            <td>{{ item['delivery_time'] }}</td>
+                            <td>
+                                <div class="actions">
+                                    <a href="{{ url_for('update_stock', id=item['id']) }}" class="action-btn update-btn">
+                                        <img src="{{ url_for('static', filename='icons/edit-icon.svg') }}" alt="Update">
+                                    </a>
+                                    <form action="{{ url_for('delete_stock', id=item['id']) }}" method="POST" style="display:inline;">
+                                        <button type="submit" class="action-btn delete-btn" onclick="return confirm('Are you sure you want to delete this item?');">
+                                            <img src="{{ url_for('static', filename='icons/delete-icon.svg') }}" alt="Delete">
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="8" class="no-items">No stock items available.</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Stock Management. All rights reserved.</p>
+    </footer>
+</body>
+</html>

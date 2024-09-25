@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coffee Shop Items</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/menu_items.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Coffee Shop Items</h1>
+        <nav>
+            <a href="{{ url_for('add_coffee_shop_item') }}" class="header-btn">Add New Items</a>
+            <a href="{{ url_for('coffee_shop') }}" class="header-btn">Back to Home</a>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Item Name</th>
+                        <th>Price</th>
+                        <th>Category</th> <!-- New Column for Category -->
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr>
+                        <td>{{ item['id'] }}</td>
+                        <td>{{ item['name'] }}</td>
+                        <td>{{ "%.2f" % item['price'] }}</td>
+                        <td>{{ item['category'] or 'N/A' }}</td> <!-- Display Category or 'N/A' -->
+                        <td>
+                            <div class="actions">
+                                <a href="{{ url_for('update_coffee_shop_item', id=item['id']) }}" class="action-btn update-btn">
+                                    <img src="{{ url_for('static', filename='icons/edit-icon.svg') }}" alt="Update">
+                                </a>
+                                <a href="{{ url_for('delete_coffee_shop_item', id=item['id']) }}" class="action-btn delete-btn">
+                                    <img src="{{ url_for('static', filename='icons/delete-icon.svg') }}" alt="Delete">
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Coffee Shop. All rights reserved.</p>
+    </footer>
+</body>
+</html>

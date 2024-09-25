@@ -1,0 +1,116 @@
+/* styles.css */
+
+/* Reset default margins and paddings */
+body, h1, h2, p, ul, li {
+    margin: 0;
+    padding: 0;
+}
+
+/* General Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #e9ecef;
+    padding: 0;
+    margin: 0;
+}
+
+/* Header Styles */
+header {
+    background-color: #343a40;
+    color: #ffffff;
+    padding: 15px;
+    border-bottom: 2px solid #007bff;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+header h1 {
+    margin: 0;
+    text-align: center;
+    font-size: 24px;
+}
+
+nav {
+    text-align: center;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+nav ul li {
+    margin: 0;
+}
+
+/* Main Section Styles */
+main {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin: 20px auto;
+    box-sizing: border-box;
+}
+
+main h2 {
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+main p {
+    font-size: 16px;
+    color: #555555;
+}
+
+ul.button-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+ul.button-list li {
+    margin-bottom: 10px;
+}
+
+ul.button-list li a {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #ffffff;
+    background-color: #007bff;
+    text-decoration: none;
+    border-radius: 5px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+ul.button-list li a:hover {
+    background-color: #0056b3;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Footer Styles */
+footer {
+    text-align: center;
+    padding: 10px;
+    background-color: #343a40;
+    color: #ffffff;
+    border-top: 2px solid #007bff;
+    width: 100%;
+    box-sizing: border-box;
+    position: absolute;
+    bottom: 0;
+}
+
+/* Ensure footer is at the bottom of the page */
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+main {
+    margin-bottom: 60px; /* Adjust based on footer height */
+}

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fast Food Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Fast Food Dashboard</h1>
+    </header>
+    
+    <main>
+        <section>
+            <h2>Manage Your Fast Food Items</h2>
+            <p>Use the Buttons below to manage your fast food inventory:</p>
+            <ul class="button-list">
+                <li><a href="{{ url_for('fast_food_items') }}" class="btn">View Fast Food Items</a></li>
+                <li><a href="{{ url_for('add_fast_food_item') }}" class="btn">Add New Fast Food Item</a></li>
+                <li><a href="{{ url_for('generate_fast_food_bill') }}" class="btn">Generate Bills</a></li>
+                <li><a href="{{ url_for('logout') }}" class="btn">Logout</a></li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Fast Food Shop. All rights reserved.</p>
+    </footer>
+</body>
+</html>

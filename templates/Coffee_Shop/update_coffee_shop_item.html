@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Coffee Shop Item</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/update_item.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Update Coffee Shop Item</h1>
+        <a href="{{ url_for('coffee_shop_items') }}" class="header-btn">Back to Menu</a>
+    </header>
+    
+    <div class="container">
+        <form action="{{ url_for('update_coffee_shop_item', id=item['id']) }}" method="POST">
+            <label for="name">Item Name:</label>
+            <input type="text" id="name" name="name" value="{{ item['name'] }}" required>
+            
+            <label for="price">Price:</label>
+            <input type="number" id="price" name="price" value="{{ item['price'] }}" step="0.01" required>
+            
+            <label for="category">Category (Optional):</label>
+            <input type="text" id="category" name="category" value="{{ item['category'] }}" placeholder="Category (e.g., Small, Medium, Large)">
+            
+            <button type="submit">Update Item</button>
+        </form>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Coffee Shop. All rights reserved.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desi Food Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Desi Food Dashboard</h1>
+    </header>
+    
+    <main>
+        <section>
+            <h2>Manage Your Desi Food Items</h2>
+            <p>Use the Buttons below to manage your Desi food inventory:</p>
+            <ul class="button-list">
+                <li><a href="{{ url_for('desi_food_items') }}">View Desi Food Items</a></li>
+                <li><a href="{{ url_for('add_desi_food_item') }}">Add New Desi Food Item</a></li>
+                <li><a href="{{ url_for('generate_desi_food_bill') }}">Generate Bills</a></li>
+                <li><a href="{{ url_for('logout') }}">Logout</a></li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Desi Food Shop. All rights reserved.</p>
+    </footer>
+</body>
+</html>

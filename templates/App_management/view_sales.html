@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales & Bills Summary</title>
+    <!-- Bootstrap CSS for Styling -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 20px;
+        }
+        .bill-summary {
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .sales-table th, .sales-table td {
+            text-align: center;
+            vertical-align: middle;
+        }
+        .bill-header {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        .sales-table {
+            margin-bottom: 20px;
+        }
+        .total-sales {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .delete-button {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1 class="text-center">Daily Sales and Bills Summary</h1>
+    <a href="{{ url_for('admin_dashboard') }}" class="header-btn">Back to Home</a>
+    
+    <!-- Search & Filter Form -->
+    <form method="POST" class="mb-4">
+        <div class="row g-3">
+            <div class="col-md-3">
+                <label for="bill_id" class="form-label">Bill ID</label>
+                <input type="text" name="bill_id" class="form-control" id="bill_id" placeholder="Enter Bill ID" value="{{ selected_bill_id }}">
+            </div>
+            <div class="col-md-3">
+                <label for="sale_date" class="form-label">Sale Date</label>
+                <input type="date" name="sale_date" class="form-control" id="sale_date" value="{{ selected_sale_date }}">
+            </div>
+            <div class="col-md-3">
+                <label for="bill_type" class="form-label">Bill Type</label>
+                <select name="bill_type" class="form-select">
+                    <option value="" {% if not selected_bill_type %}selected{% endif %}>All</option>
+                    <option value="student" {% if selected_bill_type == 'student' %}selected{% endif %}>Student</option>
+                    <option value="faculty" {% if selected_bill_type == 'faculty' %}selected{% endif %}>Faculty</option>
+                    <option value="owner" {% if selected_bill_type == 'owner' %}selected{% endif %}>Owner</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="status" class="form-label">Status</label>
+                <select name="status" class="form-select">
+                    <option value="" {% if not selected_status %}selected{% endif %}>All</option>
+                    <option value="confirmed" {% if selected_status == 'confirmed' %}selected{% endif %}>Confirmed</option>
+                    <option value="draft" {% if selected_status == 'draft' %}selected{% endif %}>Draft</option>
+                    <option value="canceled" {% if selected_status == 'canceled' %}selected{% endif %}>Canceled</option>
+                </select>
+            </div>
+            <div class="col-md-3 align-self-end">
+                <button type="submit" class="btn btn-primary w-100">Search</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Total Sales for Selected Date -->
+    {% if total_sales is not none %}
+    <div class="total-sales text-center">
+        Total Sales for {{ selected_sale_date }}: {{ "%.2f" | format(total_sales) }}
+    </div>
+    {% endif %}
+    
+    <!-- Iterate through bills and show sales under each -->
+    {% for bill in daily_bills %}
+    <div class="bill-summary my-4">
+        <div class="bill-header">Bill ID: {{ bill.id }} | Date: {{ bill.sale_date }} | Type: {{ bill.bill_type }} | Status: {{ bill.status }}</div>
+        <p>Total Price: {{ "%.2f" | format(bill.total_price) }} | Cash Received: {{ "%.2f" | format(bill.cash_received) }} | Change Due: {{ "%.2f" | format(bill.change_due) }}</p>
+        
+        <table class="table table-striped table-bordered sales-table">
+            <thead class="table-dark">
+                <tr>
+                    <th>Section</th>
+                    <th>Item ID</th>
+                    <th>Quantity</th>
+                    <th>Total Price</th>
+                    <th>Sale Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sale in daily_sales %}
+                    {% if sale.bill_id == bill.id %}
+                    <tr>
+                        <td>{{ sale.section }}</td>
+                        <td>{{ sale.item_id }}</td>
+                        <td>{{ sale.quantity }}</td>
+                        <td>{{ "%.2f" | format(sale.total_price) }}</td>
+                        <td>{{ sale.sale_date }}</td>
+                    </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Delete Button -->
+        <form action="{{ url_for('delete_bill', bill_id=bill.id) }}" method="POST" class="delete-button">
+            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this bill?');">Delete Bill</button>
+        </form>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Bootstrap JS and Popper.js -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Bill</title>
+    <!-- Link to external CSS file -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles1.css') }}">
+</head>
+<body>
+
+<!-- Header section -->
+<header>
+    <h1>Confirm Your Bill</h1>
+</header>
+
+<!-- Main container section -->
+<div class="container">
+    <h2>Confirm Bill</h2>
+
+    <table>
+        <tr>
+            <th>Bill ID</th>
+            <td>{{ bill['id'] }}</td>
+        </tr>
+        <tr>
+            <th>Date</th>
+            <td>{{ bill['sale_date'] }}</td>
+        </tr>
+        <tr>
+            <th>Total Price</th>
+            <td>{{ "%.2f" % bill['total_price'] }}</td>
+        </tr>
+        <tr>
+            <th>Cash Received</th>
+            <td>{{ "%.2f" % bill['cash_received'] }}</td>
+        </tr>
+        <tr>
+            <th>Change Due</th>
+            <td>{{ "%.2f" % bill['change_due'] }}</td>
+        </tr>
+        <tr>
+            <th>Bill Type</th>
+            <td>{{ bill['bill_type'] }}</td>
+        </tr>
+    </table>
+
+    <div class="buttons">
+        <form id="confirmForm" method="POST">
+            <input type="hidden" name="action" value="confirm">
+            <button type="submit" class="btn btn-confirm">Confirm Bill</button>
+        </form>
+
+        <form id="cancelForm" method="POST" style="display:inline;">
+            <input type="hidden" name="action" value="cancel">
+            <button type="submit" class="btn btn-cancel">Cancel Bill</button>
+        </form>
+    </div>
+</div>
+
+<!-- Footer section -->
+<footer>
+    <p>&copy; 2024 Your Company | All Rights Reserved</p>
+</footer>
+
+<script>
+    // Function to handle form submission
+    function handleFormSubmit(formId) {
+        const form = document.getElementById(formId);
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();  // Prevent default form submission
+
+            // Submit the form using Fetch API
+            fetch('', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams(new FormData(form))  // Serialize form data
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    if (data.pdf_url) {
+                        // Open the PDF in a new window if present
+                        window.open(data.pdf_url, '_blank');
+                    }
+                    // Redirect back to generate_fast_food_bill
+                    window.location.href = "{{ url_for('generate_fast_food_bill') }}";
+                } else {
+                    // Handle the case when the response indicates failure
+                    alert('An error occurred: ' + data.message);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    }
+
+    // Attach event listeners to both forms
+    handleFormSubmit('confirmForm');
+    handleFormSubmit('cancelForm');
+</script>
+
+</body>
+</html>
